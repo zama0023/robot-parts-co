@@ -1,0 +1,49 @@
+repo: 'robot-parts-co'
+canvasCourse: 'web-dev-5'
+
+inherit:
+  - naming-restrict-live
+  - git-2
+  - html
+  - seo
+
+html:
+  - path: 'index.html'
+  - path: 'robot-parts.html'
+  - path: 'contact.html'
+
+css:
+  - path: 'css/main.css'
+    locked: true
+
+functionality:
+  - path: 'contact.html'
+    tests:
+      - |
+        const schemaTag = $('script[type="application/ld+json"]');
+        let schemaData;
+
+        try {
+          schemaData = JSON.parse(schemaTag.innerHTML);
+        } catch (e) {
+          if (e.message) {
+            fail('The JSON-LD data is invalid — ' + e.message);
+          } else {
+            fail('The JSON-LD data is invalid');
+          }
+        }
+
+        if (!schemaData.hasOwnProperty('@context')) fail('The `@context` entry is missing in the JSON-LD');
+        if (!schemaData.hasOwnProperty('@type')) fail('The `@type` entry is missing in the JSON-LD');
+        if (!schemaData.hasOwnProperty('name')) fail('The `name` entry is missing in the JSON-LD');
+        if (!schemaData.hasOwnProperty('email')) fail('The `email` entry is missing in the JSON-LD');
+        if (!schemaData.hasOwnProperty('address')) fail('The `address` entry is missing in the JSON-LD');
+
+        if (!schemaData.address.hasOwnProperty('@type')) fail('The `@type` property within `address` property is missing in the JSON-LD');
+        if (!schemaData.address.hasOwnProperty('streetAddress')) fail('The `streetAddress` property within `address` property is missing in the JSON-LD');
+        if (!schemaData.address.hasOwnProperty('addressLocality')) fail('The `addressLocality` property within `address` property is missing in the JSON-LD');
+        if (!schemaData.address.hasOwnProperty('addressRegion')) fail('The `addressRegion` property within `address` property is missing in the JSON-LD');
+        if (!schemaData.address.hasOwnProperty('addressCountry')) fail('The `addressCountry` property within `address` property is missing in the JSON-LD');
+        if (!schemaData.address.hasOwnProperty('postalCode')) fail('The `postalCode` property within `address` property is missing in the JSON-LD');
+
+        pass();
